@@ -79,7 +79,7 @@ and connects the node on the core with the index of the point. In other words, p
 				nodeZ=NODE_Z(v);
 				if (N_UDMI(v,myid)==-1)
 				{
-					fprintf(ptFile,"%d %f %f %f \n", ptID, 1000*nodeX, 1000*nodeY, 1000*nodeZ);
+					fprintf(ptFile,"%d %lg %lg %lg \n", ptID, 1000*nodeX, 1000*nodeY, 1000*nodeZ);
 					N_UDMI(v,myid)=ptID;
 					ptID+=1;
 					ptNum[myid] = ptID;

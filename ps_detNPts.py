@@ -177,8 +177,9 @@ def loadVertex(frameID):
 		if line.find(strOuter) >= 0: 
 			surfaceNodes.append([]) 
 		if line.find(strVertex) >= 0:
-			lin = line[9:len(line)] # extract numeric data within line
-			X = [float(n) for n in lin.split()]
+			# extract numeric data within line
+			X = line.split() 
+			X = [float(n) for n in X[1:len(line)]]
 			surfaceNodes[faceNum].append(X)
 		if line.find(strEnd) >= 0:
 			faceNum = faceNum + 1

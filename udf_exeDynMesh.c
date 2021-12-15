@@ -59,7 +59,7 @@ DEFINE_GRID_MOTION(Ven_move, domain, dt, time, dtime)
 			  X[0]=Grid_X[ptID];
 			  X[1]=Grid_Y[ptID];
 			  X[2]=Grid_Z[ptID];
-			  /*Message (" \n node: %d, X: %f, Y:%f, Z: %f", ptID, X[0], X[1], X[2]);*/
+			  /*Message("\n node: %d, X: %lg, Y:%lg, Z: %lg", ptID, X[0], X[1], X[2]);*/
 
 			  NODE_X(node_p)=X[0]*Scale;
 			  NODE_Y(node_p)=X[1]*Scale;
@@ -88,7 +88,7 @@ DEFINE_EXECUTE_AT_END(loadMESH)
 	Message("\n %d \n", N_TIME);
 	for (i=0; i<allPtsNum; i++)
 	{
-		fscanf(meshFrame,"%f %f %f", &Grid_X[i],&Grid_Y[i],&Grid_Z[i]); 
+		fscanf(meshFrame,"%lg %lg %lg", &Grid_X[i],&Grid_Y[i],&Grid_Z[i]); 
 	}
 	fclose(meshFrame);
 	Message("Finish Loading \n");
@@ -114,8 +114,8 @@ DEFINE_ON_DEMAND(First_loadMESH)
 	Message("\n %d \n", N_TIME);
 	for (i=0; i<allPtsNum; i++)
 	{
-		fscanf(meshFrame,"%f %f %f", &Grid_X[i],&Grid_Y[i],&Grid_Z[i]);
-		/*Message (" \n Werte %d: %f %f %f \n", i, Grid_X[i], Grid_Y[i], Grid_Z[i]);*/
+		fscanf(meshFrame,"%lg %lg %lg", &Grid_X[i],&Grid_Y[i],&Grid_Z[i]);
+		/*Message("\n Werte %d: %lg %lg %lg \n", i, Grid_X[i], Grid_Y[i], Grid_Z[i]);*/
 	}
 	fclose(meshFrame);
 	Message("Finish Loading \n");
