@@ -19,9 +19,11 @@ void loadZoneID15(int *zoneID)
 	
 	if (I_AM_NODE_ZERO_P)
 	{
+		
 		Message("\n Ventricle: %d", ventricle);
 		Message("\n Inlet: %d", inlet);
 		Message("\n Outlet: %d", outlet);
+		
 	}
 }
 
@@ -35,19 +37,20 @@ DEFINE_ON_DEMAND(First_AssignID)  /* perform the UDF on demand */
 	
 		int zoneID[nFZones];	/* array containing face zone IDs */
 		int i, n;				/* indices for loops */
-		int ptID=0;				/* local node numbering on each computing node */
+		int gNodeID, ptID=0;	/* global and local node numbering on each computing node */
 		int dummy;				/* DUMMY; STILL TO BE DEFINED */
 		
 		real nodeX,nodeY,nodeZ;	/* local node coordinates */
 		FILE *ptFile;			/* pointer to file containing local node numbering and corresponding coordinates */ 
+		FILE *nIDFile;
 		int ptNum[compute_node_count];
 		
-		/* dummy variable is received in round-robin fashion; each node receives from neighboring node to the left starting with node_0; other nodes are idle and 
-		wait for the respective send (see below); ensures sequential writing to file from 0 to N-1 */
+		/* dummy variable is send in round-robin fashion (each node sends to neighboring node to the right) */
   		if (!I_AM_NODE_ZERO_P) PRF_CRECV_INT(myid - 1, &dummy, 1, myid - 1); 
 		
 		/* node_0 opens file in write mode and all other nodes in append mode */
 		ptFile=fopen("surface",(I_AM_NODE_ZERO_P ? "w" : "a"));
+		nIDFile=fopen("nodeID_List",(I_AM_NODE_ZERO_P ? "w" : "a"));
 
 		domain=Get_Domain(1);
 
@@ -81,13 +84,15 @@ DEFINE_ON_DEMAND(First_AssignID)  /* perform the UDF on demand */
 			{
 				f_node_loop(f,tFace,n)              /* loop over all nodes in face Thread tFace */
 				{
-					v=F_NODE(f,tFace,n);      		/* obtain the global face node number */
+					v=F_NODE(f,tFace,n);      		
+					gNodeID=NODE_ID(v);				/* obtain the global face node number */
 					nodeX=NODE_X(v);          		/* returns real x coordinate of node v to nodeX */
 					nodeY=NODE_Y(v);
 					nodeZ=NODE_Z(v);
 					if (N_UDMI(v,myid)==-1)			/* if N_UDMI contains -1, current node belongs to computing node and local node numbering and coordinates will be written to file */
 					{
 						fprintf(ptFile,"%d %lg %lg %lg \n", ptID, 1000*nodeX, 1000*nodeY, 1000*nodeZ);
+						fprintf(nIDFile,"%d \n", gNodeID);
 						N_UDMI(v,myid)=ptID;		/* local node numbering will be stored in user-defined memory */
 						ptID+=1;
 						ptNum[myid] = ptID;
@@ -99,8 +104,9 @@ DEFINE_ON_DEMAND(First_AssignID)  /* perform the UDF on demand */
 
 		Message(" \n %d : %d ", myid, ptNum[myid]);
 	
-  		if (!I_AM_NODE_LAST_P) PRF_CSEND_INT(myid + 1, &dummy, 1, myid); /* each computing node (except for the last) sends dummy variable to neighbor to the right */
+  		if (!I_AM_NODE_LAST_P) PRF_CSEND_INT(myid + 1, &dummy, 1, myid);
 		fclose(ptFile);
+		fclose(nIDFile);
 
 	#endif  /* RP_NODE */ 
 }
