@@ -8,10 +8,7 @@
 #define Scale 0.001 	/* factor for scaling units; already considered in udf_extPts (AssignID) */  
 #define fakeTime 0
 
-/* define the number of nodes per core (except for the last one); values are provided by AssignID (udf_extPts) in the console, adapt from there */  
-const static int PtsNum[] = { 841, 830, 796, 899 };
-
-static real vel, Grid_X[allPtsNum], Grid_Y[allPtsNum], Grid_Z[allPtsNum];
+static real Grid_X[allPtsNum], Grid_Y[allPtsNum], Grid_Z[allPtsNum];
 static int Grid_ID[allPtsNum];
 
 /* assigns loaded node coordinates to the face zones (ventricle, inlet, outlet); note: function gets called by each dynamic mesh zone 
