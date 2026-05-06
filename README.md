@@ -10,7 +10,7 @@ Read the How_to_MovingMesh9.pdf for detailed explanation of each step to perform
 
 
 If there are questions:
-Please contact Michael Neidlin - neidlin@ame.rwth-aachen.de
+Please contact Michael Neidlin - michael.neidlin@gmail.com
 
 # Idea behind new feature:
 
